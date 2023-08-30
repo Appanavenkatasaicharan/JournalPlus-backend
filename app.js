@@ -11,11 +11,24 @@ const cors = require('cors');
 const xss = require('xss-clean');
 const rateLimiter = require('express-rate-limit');
 
+
+
+const port = process.env.PORT||5000;
+
+// Import database requirements
+const connectDB = require('./db/connect') 
+
 // Import Middleware
 const AuthorizeMiddleware = require('./middleware/AuthorizeMiddleware')
+const notFound  = require('./middleware/notFound')
+const errorHandler = require('./middleware/errorHandler')
 
 // Import Routers
 const authRouter = require('./routes/authRoutes')
+const taskRouter = require('./routes/tasksRouter')
+const journalRouter = require("./routes/journalRouter");
+const calendarRouter = require('./routes/calendarRoutes');
+const { Console } = require('console');
 
 var app = express();
 
@@ -33,9 +46,6 @@ app.use(helmet())
 app.use(cors())
 app.use(xss())
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -44,17 +54,24 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Add Routers to the middleware
-app.use('api/v1/auth',authRouter)
+app.use('/api/v1/auth',authRouter)
+app.use('/api/v1/tasks',AuthorizeMiddleware,taskRouter)
+app.use('/api/v1/journals',AuthorizeMiddleware,journalRouter )
+app.use('/api/v1/calendar',AuthorizeMiddleware,calendarRouter)
 
-app.use(function(req, res, next) {
-  next(createError(404));
-});
 
-app.use(function(err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.status(err.status || 500);
-  res.render('error');
-});
+// Add Error handler and 404 case to the middleware
+app.use(notFound)
+app.use(errorHandler)
 
-module.exports = app;
+// Start the server on specified port.
+const start = async () =>{
+  try {
+      await connectDB(process.env.MONGO_URL);
+      app.listen(port,()=>console.log(`server listening on port ${port}...`));
+  } catch (error) {
+      console.log(error);
+  }
+}
+
+start()
