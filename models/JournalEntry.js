@@ -8,7 +8,7 @@ const EntrySchema = new mongoose.Schema({
         maxlength : [100,'Must not exceed 100 characters'],
         trim : true
     },
-    body : {
+    description : {
         type : String,
         trim : true
     },
@@ -19,8 +19,8 @@ const EntrySchema = new mongoose.Schema({
     },
     mood : {
         type : String,
-        enum : ['NEUTRAL','SAD','HAPPY','DEPRESSED','EXCITED','ANXIOUS'],
-        default : 'NEUTRAL'
+        enum : ['Sad','Happy','Depressed','Excited','Anxious'],
+        default : 'Happy'
     },
     createdBy:{
         type:mongoose.Types.ObjectId,
