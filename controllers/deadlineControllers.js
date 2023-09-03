@@ -1,8 +1,22 @@
 const Deadline = require("../models/Deadline")
+const {StatusCodes} = require('http-status-codes')
+const {NotFoundError} = require('../errors/MyErrors')
 
 const getAllDeadlines = async (req,res) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const {userId} = req.user
-    const deadlines = await Deadline.find({createdBy:userId})
+    const deadlines = await Deadline.find({
+        deadlineDate: {
+            $gte: today, // Match documents with a date greater than or equal to the current date
+          },
+        createdBy:userId
+    })
+    .sort(
+        {
+            deadlineDate : 1
+        }
+    )
     res.status(StatusCodes.OK).json({deadlines})
 }
 
@@ -15,7 +29,9 @@ const getDeadlinesOfDate = async (req,res) => {
 
 const createDeadline = async (req,res) => {
     const {userId} = req.user
-    const deadline = await Deadline.create({...req.body,createdBy:userId});
+    const {associatedTaskId} = req.body
+    let options = {upsert: true, new: true, setDefaultsOnInsert: true};
+    const deadline = await Deadline.findOneAndUpdate({associatedTaskId:associatedTaskId},{...req.body,createdBy:userId},options);
     res.status(StatusCodes.OK).json({deadline});
 }
 
@@ -30,7 +46,7 @@ const updateDeadline = async (req,res) => {
 }
 
 const deleteDeadline = async (req,res) => {
-    const {date:DeadlineId} = req.params;
+    const {id:DeadlineId} = req.params;
     const deadline = await Deadline.findOneAndDelete({_id:DeadlineId});
     if(!deadline){
         throw new NotFoundError(`No task found with id ${DeadlineId}`)

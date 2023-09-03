@@ -25,6 +25,7 @@ calendarRouter.route('/events').get(getAllEvents).post(createEvent)
 calendarRouter.route('/events/:date').get(getEventsOfDate).put(updateEvent).delete(deleteEvent)
 
 calendarRouter.route('/deadlines').get(getAllDeadlines).post(createDeadline)
-calendarRouter.route('/deadlines/:date').get(getDeadlinesOfDate).put(updateDeadline).delete(deleteDeadline)
+calendarRouter.route('/deadlines/:id').get(getDeadlinesOfDate).delete(deleteDeadline)
+calendarRouter.route('/deadlines/:date/:id').put(updateDeadline)
 
 module.exports = calendarRouter
