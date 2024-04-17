@@ -43,7 +43,6 @@ app.use(rateLimiter({
 }));
 
 app.use(helmet())
-app.use(cors())
 app.use(xss())
 
 
