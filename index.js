@@ -31,10 +31,9 @@ const calendarRouter = require('./routes/calendarRoutes');
 const { Console } = require('console');
 
 var app = express();
-;
 
 app.use(cors({
-    origin: 'https://journal-plus-frontend.vercel.app'
+    origin: 'https://journal-plus-frontend.vercel.app/'
 }));
 
 app.set('trust proxy', 1)
