@@ -33,7 +33,9 @@ const { Console } = require('console');
 var app = express();
 ;
 
-app.use(cors())
+app.use(cors({
+    origin: 'https://journal-plus-frontend.vercel.app'
+}));
 
 app.set('trust proxy', 1)
 app.use(rateLimiter({
