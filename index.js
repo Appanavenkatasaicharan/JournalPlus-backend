@@ -32,11 +32,6 @@ const { Console } = require('console');
 
 var app = express();
 
-app.use(cors({
-    origin: 'https://journal-plus-frontend.vercel.app/'
-}));
-
-app.set('trust proxy', 1)
 app.use(rateLimiter({
 	windowMs: 15 * 60 * 1000, // 15 minutes
 	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
