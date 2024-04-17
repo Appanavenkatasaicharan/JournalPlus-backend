@@ -31,16 +31,7 @@ const calendarRouter = require('./routes/calendarRoutes');
 const { Console } = require('console');
 
 var app = express();
-
-app.use((req, res, next) => {
-    res.setHeader({
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "*",
-        "Access-Control-Allow-Headers": "'Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token'",
-    });
-
-    next();
-});
+;
 
 app.use(cors())
 
